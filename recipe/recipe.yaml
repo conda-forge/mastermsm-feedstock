@@ -1,5 +1,5 @@
 context:
-  version: "2.0.1"
+  version: "2.1.0"
 
 package:
   name: mastermsm
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/m/mastermsm/mastermsm-${{ version }}.tar.gz
-  sha256: d09f65e57401d25d590d1e6e9f30525efa81c3a63c1930ca6b963644b9aa64a3
+  sha256: cb53d8317041c8abd433ed0080cd6609e8d8a534ec093fd5a8a30a739983d490
 
 build:
   noarch: python
@@ -39,20 +39,26 @@ tests:
       python_version:
         - ${{ python_min }}.*
         - "*"
-  # tests that need the MD trajectories from OSF are skipped
-  # if they cannot be downloaded
+  # MASTERMSM_NO_DOWNLOAD: tests that need the MD trajectories from
+  # OSF are skipped without network access (offline CI)
   - requirements:
       run:
         - python ${{ python_min }}.*
         - pytest
     script:
-      - pytest --pyargs mastermsm -q
+      env:
+        MASTERMSM_NO_DOWNLOAD: "1"
+      content:
+        - pytest --pyargs mastermsm -q -rs
   - requirements:
       run:
         - python
         - pytest
     script:
-      - pytest --pyargs mastermsm -q
+      env:
+        MASTERMSM_NO_DOWNLOAD: "1"
+      content:
+        - pytest --pyargs mastermsm -q -rs
 
 about:
   homepage: https://github.com/BioKT/MasterMSM
