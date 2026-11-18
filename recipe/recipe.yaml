@@ -39,20 +39,26 @@ tests:
       python_version:
         - ${{ python_min }}.*
         - "*"
-  # tests that need the MD trajectories from OSF are skipped
-  # if they cannot be downloaded
+  # MASTERMSM_NO_DOWNLOAD: tests that need the MD trajectories from
+  # OSF are skipped without network access (offline CI)
   - requirements:
       run:
         - python ${{ python_min }}.*
         - pytest
     script:
-      - pytest --pyargs mastermsm -q
+      env:
+        MASTERMSM_NO_DOWNLOAD: "1"
+      content:
+        - pytest --pyargs mastermsm -q -rs
   - requirements:
       run:
         - python
         - pytest
     script:
-      - pytest --pyargs mastermsm -q
+      env:
+        MASTERMSM_NO_DOWNLOAD: "1"
+      content:
+        - pytest --pyargs mastermsm -q -rs
 
 about:
   homepage: https://github.com/BioKT/MasterMSM
